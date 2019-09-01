@@ -35,6 +35,9 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "init()V", at = @At("RETURN"))
     public void onOpenScreen(CallbackInfo ci) {
+        if (binder != null)
+            binder.close();
+
         CloseableBinder[] binders = new CloseableBinder[6];
         for (Supplier</* Nullable */CloseableBinder> supplier : Runorama.getInstance().makeScreenshotBinders()) {
             CloseableBinder binder = supplier.get();

@@ -17,6 +17,9 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.NonBlockingThreadExecutor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,9 +69,9 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             float oldYaw = player.yaw;
             double oldFov = options.fov;
             player.pitch = 0;
-            player.yaw = 0;
+            // leave the yaw as-is
             player.prevPitch = 0;
-            player.prevYaw = 0;
+            player.prevYaw = player.yaw;
             options.hudHidden = true;
             options.fov = 90;
             // start
@@ -91,6 +94,9 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             player.pitch = oldPitch;
             player.yaw = oldYaw;
             options.fov = oldFov;
+            player.addChatMessage(new TranslatableText("runorama.shot", new LiteralText(root.toAbsolutePath().toString()).styled(style -> {
+                style.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, root.toAbsolutePath().toString()));
+            })), false);
             runorama.getSettings().nextScreenshot();
         }
     }
