@@ -26,7 +26,7 @@ dependencies {
     modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-     modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
@@ -38,12 +38,6 @@ sourceSets {
         compileClasspath += configurations.minecraftNamed
         runtimeClasspath += sourceSets.main.runtimeClasspath
         compileClasspath += configurations.minecraftNamed
-    }
-    data {
-        compileClasspath += sourceSets.code.compileClasspath
-        compileClasspath += sourceSets.code.output
-        runtimeClasspath += sourceSets.code.compileClasspath
-        runtimeClasspath += sourceSets.code.output
     }
     main {
         compileClasspath += sourceSets.code.output
@@ -72,7 +66,7 @@ tasks.withType(Javadoc) {
             'https://google.github.io/guava/releases/21.0/api/docs/',
             'http://asm.ow2.org/asm50/javadoc/user/',
             'https://docs.oracle.com/javase/8/docs/api/',
-			'http://jenkins.liteloader.com/job/Mixin/javadoc/'
+            'http://jenkins.liteloader.com/job/Mixin/javadoc/'
             // Need to add minecraft jd publication once there is one available
     )
 
@@ -80,36 +74,7 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
-def dataDir = project.file(".gradle/datadump/")
-def dataCacheDir = new File(dataDir, "/.cache/")
-
-task deleteOldData(type: Delete) {
-    delete dataDir
-}
-
-task generateData(type: JavaExec) {
-    dependsOn deleteOldData
-
-    doFirst {
-        dataDir.mkdirs()
-    }
-
-    classpath = sourceSets.data.runtimeClasspath
-
-    main = project.dataEntry
-
-    // arguments to pass to the application
-
-    workingDir dataDir
-    args dataDir.getAbsolutePath()
-}
-
 processResources {
-    dependsOn generateData
-
-    from(dataDir) {
-        include "/data/"
-    }
     from sourceSets.code.resources.srcDirs
 
     inputs.properties "version": project.version, "description": project.description
@@ -142,7 +107,6 @@ task javadocsJar(type: Jar, dependsOn: javadocs) {
 }
 
 jar {
-    dependsOn generateData
     from sourceSets.code.output
     from "LICENSE"
 }

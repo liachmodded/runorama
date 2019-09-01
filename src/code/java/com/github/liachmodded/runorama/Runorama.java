@@ -7,15 +7,12 @@ package com.github.liachmodded.runorama;
 
 import com.github.liachmodded.runorama.client.BoundImage;
 import com.github.liachmodded.runorama.client.CloseableBinder;
-import com.github.liachmodded.runorama.client.VanillaPanorama;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceImpl;
 import net.minecraft.util.Identifier;
@@ -24,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -59,7 +55,8 @@ public final class Runorama implements ClientModInitializer {
         settingsFile = configRoot.resolve(ID + ".properties");
         readSettings();
 
-        FabricKeyBinding screenshotKey = FabricKeyBinding.Builder.create(name("runorama"), InputUtil.Type.KEYSYM, 72/*h*/, "key.categories.misc").build();
+        FabricKeyBinding screenshotKey =
+                FabricKeyBinding.Builder.create(name("runorama"), InputUtil.Type.KEYSYM, 72/*h*/, "key.categories.misc").build();
         KeyBindingRegistry.INSTANCE.register(screenshotKey);
         ClientTickCallback.EVENT.register(c -> {
             if (screenshotKey.isPressed()) {
@@ -96,8 +93,9 @@ public final class Runorama implements ClientModInitializer {
             }
             for (int j = 0; j < 6; j++) {
                 Path part = eachRunoFolder.resolve("paranoma_" + j + ".png");
-                if (!Files.isRegularFile(part))
+                if (!Files.isRegularFile(part)) {
                     continue outerLoop;
+                }
             }
             ret.add(() -> {
                 NativeImage[] images = new NativeImage[6];
@@ -113,25 +111,6 @@ public final class Runorama implements ClientModInitializer {
                 return new BoundImage(images);
             });
         }
-
-//        if (settings.useScreenshots.get() && Files.isDirectory(vanillaScreenshotDir)) {
-//            try (DirectoryStream<Path> stream = Files.newDirectoryStream(vanillaScreenshotDir)) {
-//                for (Path each : stream) {
-//                    if (each.getFileName().endsWith(".png") && Files.isRegularFile(each)) {
-//                        ret.add(() -> {
-//                            try (InputStream inputStream = Files.newInputStream(each)) {
-//                                return new BoundImage(NativeImage.read(inputStream));
-//                            } catch (IOException ex) {
-//                                Runorama.LOGGER.error("Failed to bind vanilla screenshot {}!", each, ex);
-//                                return null;
-//                            }
-//                        });
-//                    }
-//                }
-//            } catch (IOException ex) {
-//                Runorama.LOGGER.error("Tried to look up screenshots but failed", ex);
-//            }
-//        }
 
         Collections.shuffle(ret);
         return ret;
@@ -155,7 +134,7 @@ public final class Runorama implements ClientModInitializer {
                 screenshot.resizeSubRectTo(int_3, int_4, width, height, saved);
                 saved.writeFile(folder.resolve("paranoma_" + i + ".png"));
             } catch (IOException var27) {
-                Runorama.LOGGER.warn("Couldn't save auto screenshot", var27);
+                Runorama.LOGGER.warn("Couldn't save screenshot", var27);
             } finally {
                 screenshot.close();
             }

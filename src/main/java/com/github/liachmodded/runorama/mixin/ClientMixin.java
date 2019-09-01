@@ -13,7 +13,6 @@ import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
@@ -30,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.nio.file.Path;
-import java.util.Random;
 
 @Mixin(MinecraftClient.class)
 public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
@@ -54,10 +52,11 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
 
     @Inject(method = "render(Z)V",
             at = @At(target = "Lnet/minecraft/client/toast/ToastManager;draw()V", value = "INVOKE"),
-    locals = LocalCapture.CAPTURE_FAILHARD)
+            locals = LocalCapture.CAPTURE_FAILHARD)
     public void runorama$afterGameRender(boolean boolean_1, CallbackInfo ci, long long_1) {
-        if (world == null)
+        if (world == null) {
             return;
+        }
         Runorama runorama = Runorama.getInstance();
         if (runorama.needsScreenshot) {
             Runorama.LOGGER.info("Taking screenshot");
@@ -83,10 +82,10 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             }
             rotate(-90f, 0f);
             doRender(boolean_1, long_1);
-            takeScreenshot(runorama, root,4);
+            takeScreenshot(runorama, root, 4);
             rotate(180f, 0f);
             doRender(boolean_1, long_1);
-            takeScreenshot(runorama, root,5);
+            takeScreenshot(runorama, root, 5);
             // end
             options.hudHidden = oldHudHidden;
             player.prevYaw = oldPrevYaw;
@@ -110,8 +109,6 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
         player.yaw += yaw;
         player.prevPitch = player.pitch;
         player.prevYaw = player.yaw;
-//        RenderSystem.rotatef(float_1, 1.0F, 0.0F, 0.0F); // x - pitch
-//        RenderSystem.rotatef(float_2, 0.0F, 1.0F, 0.0F); // y - yaw
     }
 
     private void takeScreenshot(Runorama runorama, Path folder, int id) {
