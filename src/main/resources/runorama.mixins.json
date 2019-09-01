@@ -1,10 +1,11 @@
 {
   "required": true,
-  "package": "",
+  "package": "com.github.liachmodded.runorama.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
+    "TitleScreenMixin",
+    "GameRendererMixin",
+    "ClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

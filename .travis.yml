@@ -40,7 +40,7 @@ jobs:
 stages:
 - build
 - name: deploy
-  if: repo = liachmodded/carttemplate AND env(bintray_key) AND env(GITHUB_OAUTH_TOKEN)
+  if: repo = liachmodded/runorama AND env(bintray_key) AND env(GITHUB_OAUTH_TOKEN)
 env:
   global:
   - TERM=dumb

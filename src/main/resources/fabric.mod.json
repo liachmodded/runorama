@@ -1,34 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "doublecart",
+  "id": "runorama",
   "version": "${version}",
 
-  "name": "double cart",
+  "name": "runorama",
   "description": "${description}",
   "authors": [
     "liach"
   ],
   "contact": {
-    "homepage": "https://github.com/liachmodded/doublecart",
-    "sources": "https://github.com/liachmodded/doublecart"
+    "homepage": "https://github.com/liachmodded/runorama",
+    "sources": "https://github.com/liachmodded/runorama",
+    "issues": "https://github.com/liachmodded/runorama/issues"
   },
 
   "license": "MPL-2.0",
-  "icon": "assets/doublecart/icon.png",
+  "icon": "assets/runorama/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "com.github.liachmodded.doublecart.DoubleCartEntry"
+    "client": [
+      "com.github.liachmodded.runorama.Runorama"
     ]
   },
   "mixins": [
-    "doublecart.mixins.json"
+    "runorama.mixins.json"
   ],
 
-  "requires": {
-    "fabricloader": ">=0.4.0"
-  },
-  "suggests": {
+  "depends": {
+    "fabricloader": ">=0.6.0"
   }
 }
