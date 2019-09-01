@@ -70,7 +70,7 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             player.prevPitch = 0;
             player.prevYaw = 0;
             options.hudHidden = true;
-            options.fov = 82;
+            options.fov = 90;
             // start
             Path root = runorama.getSettings().getCurrentRunoramaFolder();
             for (int i = 0; i < 4; i++) {
