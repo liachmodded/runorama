@@ -7,7 +7,6 @@ package com.github.liachmodded.runorama.client;
 
 import com.github.liachmodded.runorama.Runorama;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -35,32 +34,32 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
     public void draw(MinecraftClient client, float xAngle, float yAngle, float zAngle, float alphaF) {
         Tessellator tessellator_1 = Tessellator.getInstance();
         BufferBuilder bufferBuilder_1 = tessellator_1.getBufferBuilder();
-        RenderSystem.matrixMode(5889);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
-        RenderSystem.multMatrix(Matrix4f.method_4929(85.0D,
-                (float) client.method_22683().getFramebufferWidth() / (float) client.method_22683().getFramebufferHeight(), 0.05F, 10.0F));
-        RenderSystem.matrixMode(5888);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableCull();
-        RenderSystem.depthMask(false);
-        RenderSystem.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA, GlStateManager.class_4535.ONE,
+        GlStateManager.matrixMode(5889);
+        GlStateManager.pushMatrix();
+        GlStateManager.loadIdentity();
+        GlStateManager.multMatrix(Matrix4f.method_4929(85.0D,
+                (float) minecraftClient_1.window.getFramebufferWidth() / (float) minecraftClient_1.window.getFramebufferHeight(), 0.05F, 10.0F));
+        GlStateManager.matrixMode(5888);
+        GlStateManager.pushMatrix();
+        GlStateManager.loadIdentity();
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlphaTest();
+        GlStateManager.disableCull();
+        GlStateManager.depthMask(false);
+        GlStateManager.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA, GlStateManager.class_4535.ONE,
                 GlStateManager.class_4534.ZERO);
 
         for (int pass = 0; pass < 4; ++pass) {
-            RenderSystem.pushMatrix();
+            GlStateManager.pushMatrix();
             float float_4 = ((float) (pass % 2) / 2.0F - 0.5F) / 256.0F;
             float float_5 = ((float) (pass / 2) / 2.0F - 0.5F) / 256.0F;
             float float_6 = 0.0F;
-            RenderSystem.translatef(float_4, float_5, float_6);
-            RenderSystem.rotatef(xAngle, 1.0F, 0.0F, 0.0F);
-            RenderSystem.rotatef(yAngle, 0.0F, 1.0F, 0.0F);
-            RenderSystem.rotatef(zAngle, 0.0F, 0.0F, 1.0F);
+            GlStateManager.translatef(float_4, float_5, float_6);
+            GlStateManager.rotatef(xAngle, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotatef(yAngle, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotatef(zAngle, 0.0F, 0.0F, 1.0F);
 
             for (int int_3 = 0; int_3 < 6; ++int_3) {
                 //            minecraftClient_1.getTextureManager().bindTexture(this.faces[int_3]);
@@ -112,18 +111,18 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
                 tessellator_1.draw();
             }
 
-            RenderSystem.popMatrix();
-            RenderSystem.colorMask(true, true, true, false);
+            GlStateManager.popMatrix();
+            GlStateManager.colorMask(true, true, true, false);
         }
 
         bufferBuilder_1.setOffset(0.0D, 0.0D, 0.0D);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.matrixMode(5889);
-        RenderSystem.popMatrix();
-        RenderSystem.matrixMode(5888);
-        RenderSystem.popMatrix();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableCull();
-        RenderSystem.enableDepthTest();
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.matrixMode(5889);
+        GlStateManager.popMatrix();
+        GlStateManager.matrixMode(5888);
+        GlStateManager.popMatrix();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableCull();
+        GlStateManager.enableDepthTest();
     }
 }

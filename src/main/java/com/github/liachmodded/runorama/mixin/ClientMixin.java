@@ -104,7 +104,7 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
     }
 
     private void takeScreenshot(Runorama runorama, Path folder, int id) {
-        NativeImage shot = ScreenshotUtils.takeScreenshot(window.getFramebufferWidth(), window.getFramebufferHeight(),
+        NativeImage shot = ScreenshotUtils.method_1663(window.getFramebufferWidth(), window.getFramebufferHeight(),
                 framebuffer);
         runorama.saveScreenshot(shot, folder, id);
     }
