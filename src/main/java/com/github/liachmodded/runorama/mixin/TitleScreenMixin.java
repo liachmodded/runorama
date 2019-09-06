@@ -35,7 +35,7 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @Inject(method = "init()V", at = @At("RETURN"))
-    public void onOpenScreen(CallbackInfo ci) {
+    public void runorama$onOpenScreen(CallbackInfo ci) {
         for (Supplier</* Nullable */CloseableBinder> supplier : Runorama.getInstance().makeScreenshotBinders()) {
             CloseableBinder binder = supplier.get();
             if (binder != null) {
@@ -52,7 +52,7 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @Inject(method = "removed()V", at = @At("RETURN"))
-    public void onDiscard(CallbackInfo ci) {
+    public void runorama$onDiscard(CallbackInfo ci) {
         binder.close();
         binder = null;
     }

@@ -5,7 +5,8 @@
   "client": [
     "TitleScreenMixin",
     "ClientMixin",
-    "GameRendererAccessor"
+    "GameRendererAccessor",
+    "CameraMixin"
   ],
   "injectors": {
     "defaultRequire": 1

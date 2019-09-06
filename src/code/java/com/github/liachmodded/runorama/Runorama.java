@@ -37,6 +37,9 @@ public final class Runorama implements ClientModInitializer {
     private Path cacheDir;
     private Path settingsFile;
     private RunoSettings settings;
+    private boolean takingScreenshot;
+    private float desiredPitch;
+    private float desiredYaw;
     public boolean needsScreenshot = false;
 
     public static Identifier name(String name) {
@@ -143,5 +146,27 @@ public final class Runorama implements ClientModInitializer {
 
     public RunoSettings getSettings() {
         return this.settings;
+    }
+
+    public void setPanoramicRotation(float pitch, float yaw) {
+        this.takingScreenshot = true;
+        this.desiredPitch = pitch;
+        this.desiredYaw = yaw;
+    }
+
+    public boolean isTakingScreenshot() {
+        return takingScreenshot;
+    }
+
+    public float getDesiredPitch() {
+        return desiredPitch;
+    }
+
+    public float getDesiredYaw() {
+        return desiredYaw;
+    }
+
+    public void endPanorama() {
+        this.takingScreenshot = false;
     }
 }

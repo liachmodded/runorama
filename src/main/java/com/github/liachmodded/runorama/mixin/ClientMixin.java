@@ -13,13 +13,11 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
@@ -43,18 +41,11 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
     @Shadow private boolean paused;
     @Shadow private float pausedTickDelta;
     @Shadow private @Final RenderTickCounter renderTickCounter;
-
     @Shadow public ClientPlayerEntity player;
-
     @Shadow public GameOptions options;
-
     @Shadow public ClientWorld world;
-
     @Shadow public Screen currentScreen;
-
-    @Shadow public abstract Entity getCameraEntity();
-
-    @Shadow public WorldRenderer worldRenderer;
+    @Shadow public Entity cameraEntity;
 
     public ClientMixin(String string_1) {
         super(string_1);
@@ -71,63 +62,35 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
         if (runorama.needsScreenshot) {
             Runorama.LOGGER.info("Taking screenshot");
             runorama.needsScreenshot = false;
-            Screen oldScreen = this.currentScreen;
-            Entity watcher = getCameraEntity();
-            if (watcher == null) {
-                watcher = player;
-            }
-            LivingEntity living = watcher instanceof LivingEntity ? (LivingEntity) watcher : null;
+            // record
             boolean oldHudHidden = options.hudHidden;
-            float oldPrevPitch = watcher.prevPitch;
-            float oldPrevYaw = watcher.prevYaw;
-            float oldPrevHeadYaw;
-            float oldPitch = watcher.pitch;
-            float oldYaw = watcher.yaw;
-            float oldHeadYaw;
-            if (living != null) {
-                oldPrevHeadYaw = living.prevHeadYaw;
-                oldHeadYaw = living.headYaw;
-            } else {
-                oldPrevHeadYaw = 0;
-                oldHeadYaw = 0;
-            }
             boolean oldField_4001 = ((GameRendererAccessor) gameRenderer).getField_4001();
-            currentScreen = null;
-
-            watcher.pitch = 0;
-            // leave the yaw as-is
-            watcher.prevPitch = 0;
-            watcher.prevYaw = watcher.yaw;
-            if (living != null) {
-                living.prevHeadYaw = living.headYaw;
-            }
+            Screen oldScreen = this.currentScreen;
+            // set
             options.hudHidden = true;
             ((GameRendererAccessor) gameRenderer).setField_4001(true);
-            // start
+            currentScreen = null;
+            // take
+            float yaw = (cameraEntity == null ? player : cameraEntity).getYaw(this.paused ? this.pausedTickDelta : this.renderTickCounter.tickDelta);
             Path root = runorama.getSettings().getCurrentRunoramaFolder();
             for (int i = 0; i < 4; i++) {
+                runorama.setPanoramicRotation(0f, yaw);
                 doRender(boolean_1, long_1);
                 takeScreenshot(runorama, root, i);
-                rotate(watcher, 0f, 90f);
+                yaw += 90f;
             }
-            rotate(watcher, -90f, 0f);
+            runorama.setPanoramicRotation(-90f, yaw);
             doRender(boolean_1, long_1);
             takeScreenshot(runorama, root, 4);
-            rotate(watcher, 180f, 0f);
+            runorama.setPanoramicRotation(90f, yaw);
             doRender(boolean_1, long_1);
             takeScreenshot(runorama, root, 5);
-            // end
+            runorama.endPanorama();
+            // restore
             currentScreen = oldScreen;
             options.hudHidden = oldHudHidden;
-            watcher.prevYaw = oldPrevYaw;
-            watcher.prevPitch = oldPrevPitch;
-            watcher.pitch = oldPitch;
-            watcher.yaw = oldYaw;
-            if (living != null) {
-                living.headYaw = oldHeadYaw;
-                living.prevHeadYaw = oldPrevHeadYaw;
-            }
             ((GameRendererAccessor) gameRenderer).setField_4001(oldField_4001);
+
             player.addChatMessage(new TranslatableText("runorama.shot", new LiteralText(root.toAbsolutePath().toString()).styled(style -> {
                 style.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, root.toAbsolutePath().toString()));
             })), false);
@@ -138,18 +101,6 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
     private void doRender(boolean boolean_1, long long_1) {
         // Need to modify so that Camera gets right pitch/yaw for setRotation
         gameRenderer.render(this.paused ? this.pausedTickDelta : this.renderTickCounter.tickDelta, long_1, boolean_1);
-    }
-
-    private void rotate(Entity watcher, float pitch, float yaw) {
-        watcher.pitch += pitch;
-        watcher.yaw += yaw;
-        watcher.prevPitch = watcher.pitch;
-        watcher.prevYaw = watcher.yaw;
-        if (watcher instanceof LivingEntity) {
-            LivingEntity living = (LivingEntity) watcher;
-            living.headYaw = watcher.yaw;
-            living.prevHeadYaw = watcher.yaw;
-        }
     }
 
     private void takeScreenshot(Runorama runorama, Path folder, int id) {
