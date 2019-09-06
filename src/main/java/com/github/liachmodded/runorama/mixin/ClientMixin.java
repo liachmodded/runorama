@@ -8,6 +8,7 @@ package com.github.liachmodded.runorama.mixin;
 import com.github.liachmodded.runorama.Runorama;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlFramebuffer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.GameRenderer;
@@ -46,6 +47,8 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
 
     @Shadow public ClientWorld world;
 
+    @Shadow public Screen currentScreen;
+
     public ClientMixin(String string_1) {
         super(string_1);
     }
@@ -61,12 +64,14 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
         if (runorama.needsScreenshot) {
             Runorama.LOGGER.info("Taking screenshot");
             runorama.needsScreenshot = false;
+            Screen oldScreen = this.currentScreen;
             boolean oldHudHidden = options.hudHidden;
             float oldPrevPitch = player.prevPitch;
             float oldPrevYaw = player.prevYaw;
             float oldPitch = player.pitch;
             float oldYaw = player.yaw;
             double oldFov = options.fov;
+            currentScreen = null;
             player.pitch = 0;
             // leave the yaw as-is
             player.prevPitch = 0;
@@ -87,6 +92,7 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             doRender(boolean_1, long_1);
             takeScreenshot(runorama, root, 5);
             // end
+            currentScreen = oldScreen;
             options.hudHidden = oldHudHidden;
             player.prevYaw = oldPrevYaw;
             player.prevPitch = oldPrevPitch;
@@ -112,7 +118,7 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
     }
 
     private void takeScreenshot(Runorama runorama, Path folder, int id) {
-        NativeImage shot = ScreenshotUtils.method_1663(window.getFramebufferWidth(), window.getFramebufferHeight(),
+        NativeImage shot = ScreenshotUtils.takeScreenshot(window.getFramebufferWidth(), window.getFramebufferHeight(),
                 framebuffer);
         runorama.saveScreenshot(shot, folder, id);
     }
