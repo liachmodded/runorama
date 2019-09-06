@@ -34,7 +34,7 @@ public final class RunoConfig {
     }
 
     public Property<Boolean> booleanProperty(String key, boolean value) {
-        return property(key, value, Boolean::valueOf, b -> b ? "true" : "false");
+        return property(key, value, Boolean::valueOf);
     }
 
     public Property<Integer> integerProperty(String key, int value) {
@@ -44,11 +44,25 @@ public final class RunoConfig {
             } catch (NumberFormatException ex) {
                 return value;
             }
-        }, i -> i.toString());
+        });
+    }
+
+    public Property<Double> doubleProperty(String key, double value) {
+        return property(key, value, st -> {
+            try {
+                return Double.parseDouble(st);
+            } catch (NumberFormatException ex) {
+                return value;
+            }
+        });
     }
 
     public Property<String> stringProperty(String key, String value) {
         return property(key, value, Function.identity(), Function.identity());
+    }
+
+    public <T> Property<T> property(String key, T value, Function<String, T> reader) {
+        return property(key, value, reader, String::valueOf);
     }
 
     public <T> Property<T> property(String key, T value, Function<String, T> reader, Function<T, String> saver) {

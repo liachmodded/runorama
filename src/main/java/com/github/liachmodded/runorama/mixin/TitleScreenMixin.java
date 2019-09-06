@@ -8,6 +8,7 @@ package com.github.liachmodded.runorama.mixin;
 import com.github.liachmodded.runorama.Runorama;
 import com.github.liachmodded.runorama.client.CloseableBinder;
 import com.github.liachmodded.runorama.client.RunoramaCubeMapRenderer;
+import com.github.liachmodded.runorama.client.RunoramaRotatingCubeMapRenderer;
 import com.github.liachmodded.runorama.client.VanillaPanorama;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -47,7 +48,7 @@ public abstract class TitleScreenMixin extends Screen {
             this.binder = new VanillaPanorama();
         }
 
-        this.backgroundRenderer = new RotatingCubeMapRenderer(new RunoramaCubeMapRenderer(binder));
+        this.backgroundRenderer = new RunoramaRotatingCubeMapRenderer(new RunoramaCubeMapRenderer(binder));
     }
 
     @Inject(method = "removed()V", at = @At("RETURN"))

@@ -16,6 +16,7 @@ public final class RunoSettings {
     private final Path path;
     public final RunoConfig.Property<Integer> next;
     public final RunoConfig.Property<Integer> poolSize;
+    public final RunoConfig.Property<Double> rotationSpeed;
 
     public RunoSettings(Runorama mod, RunoConfig backend, Path path) {
         this.mod = mod;
@@ -23,6 +24,7 @@ public final class RunoSettings {
         this.path = path;
         this.next = config.integerProperty("next", 0);
         this.poolSize = config.integerProperty("pool-size", 1000);
+        this.rotationSpeed = config.doubleProperty("clockwise-rotation-speed", 1.0D);
     }
 
     public Path getCurrentRunoramaFolder() {
