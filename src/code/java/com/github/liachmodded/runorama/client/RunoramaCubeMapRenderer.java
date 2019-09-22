@@ -38,7 +38,7 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
         GlStateManager.pushMatrix();
         GlStateManager.loadIdentity();
         GlStateManager.multMatrix(Matrix4f.method_4929(85.0D,
-                (float) minecraftClient_1.window.getFramebufferWidth() / (float) minecraftClient_1.window.getFramebufferHeight(), 0.05F, 10.0F));
+                (float) client.window.getFramebufferWidth() / (float) client.window.getFramebufferHeight(), 0.05F, 10.0F));
         GlStateManager.matrixMode(5888);
         GlStateManager.pushMatrix();
         GlStateManager.loadIdentity();
@@ -48,8 +48,8 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
         GlStateManager.disableAlphaTest();
         GlStateManager.disableCull();
         GlStateManager.depthMask(false);
-        GlStateManager.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA, GlStateManager.class_4535.ONE,
-                GlStateManager.class_4534.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
 
         for (int pass = 0; pass < 4; ++pass) {
             GlStateManager.pushMatrix();

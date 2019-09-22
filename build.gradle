@@ -9,9 +9,9 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('TRAVIS_BUILD_NUMBER'))) {
-    version = project.modVersion + '.' + System.getenv('TRAVIS_BUILD_NUMBER')
+    version = minecraftVersion + "-" + project.modVersion + '.' + System.getenv('TRAVIS_BUILD_NUMBER')
 } else {
-    version = project.modVersion
+    version = minecraftVersion + "-" + project.modVersion
 }
 logger.lifecycle("${project.archivesBaseName} version ${project.version}")
 group = project.mavenGroup
