@@ -9,14 +9,34 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * The settings for Runorama, loaded from the configuration.
+ */
 public final class RunoSettings {
 
     private final Runorama mod;
     private final RunoConfig config;
     private final Path path;
+    /**
+     * The integer ID of the next panorama that will be taken.
+     */
     public final RunoConfig.Property<Integer> next;
+    /**
+     * The max ID possible for panoramas. When the next ID exceeds this size, old panoramas will be removed.
+     */
     public final RunoConfig.Property<Integer> poolSize;
+    /**
+     * The rotation speed of the panorama in the {@link net.minecraft.client.gui.screen.TitleScreen title screen}.
+     *
+     * <p>Negative values will make the rotation counterclockwise.
+     *
+     * <p>A speed that's too high may make viewers dizzy!
+     */
     public final RunoConfig.Property<Double> rotationSpeed;
+    /**
+     * Whether to include vanilla panorama for the panoramas Runorama mod would display.
+     */
+    public final RunoConfig.Property<Boolean> includeVanillaPanorama;
 
     public RunoSettings(Runorama mod, RunoConfig backend, Path path) {
         this.mod = mod;
@@ -25,6 +45,7 @@ public final class RunoSettings {
         this.next = config.integerProperty("next", 0);
         this.poolSize = config.integerProperty("pool-size", 1000);
         this.rotationSpeed = config.doubleProperty("clockwise-rotation-speed", 1.0D);
+        this.includeVanillaPanorama = config.booleanProperty("include-vanilla-panorama", false);
     }
 
     public Path getCurrentRunoramaFolder() {

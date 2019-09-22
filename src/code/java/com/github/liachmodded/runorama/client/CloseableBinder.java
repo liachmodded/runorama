@@ -7,7 +7,15 @@ package com.github.liachmodded.runorama.client;
 
 public interface CloseableBinder extends AutoCloseable {
 
+    /**
+     * Bind an image for a face. Face varies from 0 to 6.
+     *
+     * @param face the face index
+     */
     void bind(int face);
 
+    /**
+     * Disposes this binder.
+     */
     void close();
 }

@@ -7,6 +7,7 @@ package com.github.liachmodded.runorama;
 
 import com.github.liachmodded.runorama.client.BoundImage;
 import com.github.liachmodded.runorama.client.CloseableBinder;
+import com.github.liachmodded.runorama.client.VanillaPanorama;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,9 +31,18 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+/**
+ * Runorama mod class.
+ */
 public final class Runorama implements ClientModInitializer {
 
+    /**
+     * The mod id, or the namespace of Runorama.
+     */
     public static final String ID = "runorama";
+    /**
+     * The logger.
+     */
     public static final Logger LOGGER = LogManager.getLogger(ID);
     private static Runorama instance;
     private Path cacheDir;
@@ -40,12 +51,24 @@ public final class Runorama implements ClientModInitializer {
     private boolean takingScreenshot;
     private float desiredPitch;
     private float desiredYaw;
+    /**
+     * Whether to take a screenshot the next time a frame is rendered.
+     */
     public boolean needsScreenshot = false;
 
+    /**
+     * Easy way to create an {@link Identifier} with Runorama's namespace.
+     *
+     * @param name the name
+     * @return a new identifier
+     */
     public static Identifier name(String name) {
         return new Identifier(ID, name);
     }
 
+    /**
+     * Returns Runorama's instance.
+     */
     public static Runorama getInstance() {
         return instance;
     }
@@ -59,7 +82,7 @@ public final class Runorama implements ClientModInitializer {
         readSettings();
 
         FabricKeyBinding screenshotKey =
-                FabricKeyBinding.Builder.create(name("runorama"), InputUtil.Type.KEYSYM, 72/*h*/, "key.categories.misc").build();
+                FabricKeyBinding.Builder.create(name("runorama"), InputUtil.Type.KEYSYM, 'H'/*h*/, "key.categories.misc").build();
         KeyBindingRegistry.INSTANCE.register(screenshotKey);
         ClientTickCallback.EVENT.register(c -> {
             if (screenshotKey.isPressed()) {
@@ -86,39 +109,62 @@ public final class Runorama implements ClientModInitializer {
         return cacheDir.resolve("panorama-" + id);
     }
 
+    /**
+     * Make a list of candidates for panoramas.
+     *
+     * <p>Each candidate may fail to evaluate when called.
+     *
+     * @return the list of candidates
+     */
     public List<Supplier</* Nullable */CloseableBinder>> makeScreenshotBinders() {
         List<Supplier</* Nullable */CloseableBinder>> ret = new ArrayList<>();
-        outerLoop:
-        for (int i = 0; i < settings.poolSize.get(); i++) {
-            Path eachRunoFolder = getCacheImagePath(i);
-            if (!Files.isDirectory(eachRunoFolder)) {
-                continue;
+
+        try (DirectoryStream<Path> paths = Files.newDirectoryStream(cacheDir, eachFolder -> {
+            if (!Files.isDirectory(eachFolder)) {
+                return false;
             }
-            for (int j = 0; j < 6; j++) {
-                Path part = eachRunoFolder.resolve("paranoma_" + j + ".png");
+            for (int i = 0; i < 6; i++) {
+                Path part = eachFolder.resolve("panorama_" + i + ".png");
                 if (!Files.isRegularFile(part)) {
-                    continue outerLoop;
+                    return false;
                 }
             }
-            ret.add(() -> {
-                NativeImage[] images = new NativeImage[6];
-                for (int j = 0; j < 6; j++) {
-                    Path part = eachRunoFolder.resolve("paranoma_" + j + ".png");
-                    try (InputStream stream = Files.newInputStream(part)) {
-                        images[j] = NativeImage.read(stream);
-                    } catch (IOException ex) {
-                        Runorama.LOGGER.error("Failed to bind custom screenshot part at {}!", part, ex);
-                        return null;
+            return true;
+        })) {
+            for (final Path eachFolder : paths) {
+                ret.add(() -> {
+                    NativeImage[] images = new NativeImage[6];
+                    for (int j = 0; j < 6; j++) {
+                        Path part = eachFolder.resolve("panorama_" + j + ".png");
+                        try (InputStream stream = Files.newInputStream(part)) {
+                            images[j] = NativeImage.read(stream);
+                        } catch (IOException ex) {
+                            Runorama.LOGGER.error("Failed to bind custom screenshot part at {}!", part, ex);
+                            return null;
+                        }
                     }
-                }
-                return new BoundImage(images);
-            });
+                    return new BoundImage(images);
+                });
+            }
+        } catch (IOException ex) {
+            return Collections.emptyList();
+        }
+
+        if (settings.includeVanillaPanorama.get()) {
+            ret.add(VanillaPanorama::new);
         }
 
         Collections.shuffle(ret);
         return ret;
     }
 
+    /**
+     * Save a partial screenshot for a panorama.
+     *
+     * @param screenshot the image
+     * @param folder the panorama folder
+     * @param i the face index
+     */
     public void saveScreenshot(NativeImage screenshot, Path folder, int i) {
         ResourceImpl.RESOURCE_IO_EXECUTOR.execute(() -> {
             try {
@@ -135,7 +181,7 @@ public final class Runorama implements ClientModInitializer {
                 }
                 NativeImage saved = new NativeImage(width, height, false);
                 screenshot.resizeSubRectTo(int_3, int_4, width, height, saved);
-                saved.writeFile(folder.resolve("paranoma_" + i + ".png"));
+                saved.writeFile(folder.resolve("panorama_" + i + ".png"));
             } catch (IOException var27) {
                 Runorama.LOGGER.warn("Couldn't save screenshot", var27);
             } finally {
@@ -144,28 +190,49 @@ public final class Runorama implements ClientModInitializer {
         });
     }
 
+    /**
+     * Gets the settings of the mod, loaded from the configuration file.
+     */
     public RunoSettings getSettings() {
         return this.settings;
     }
 
+    /**
+     * Sets the rotation for the camera for the panorama and start taking a screenshot.
+     *
+     * @param pitch the pitch
+     * @param yaw the yaw
+     */
     public void setPanoramicRotation(float pitch, float yaw) {
         this.takingScreenshot = true;
         this.desiredPitch = pitch;
         this.desiredYaw = yaw;
     }
 
+    /**
+     * Returns true if a screenshot is in progress.
+     */
     public boolean isTakingScreenshot() {
         return takingScreenshot;
     }
 
+    /**
+     * Returns the desired pitch for the camera.
+     */
     public float getDesiredPitch() {
         return desiredPitch;
     }
 
+    /**
+     * Returns the desired yaw for the camera.
+     */
     public float getDesiredYaw() {
         return desiredYaw;
     }
 
+    /**
+     * End the series of screenshot.
+     */
     public void endPanorama() {
         this.takingScreenshot = false;
     }

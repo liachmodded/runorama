@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface GameRendererAccessor {
 
     @Accessor("field_4001")
-    void setField_4001(boolean value);
+    void setFov90(boolean value);
 
     @Accessor("field_4001")
-    boolean getField_4001();
+    boolean isFov90();
 }

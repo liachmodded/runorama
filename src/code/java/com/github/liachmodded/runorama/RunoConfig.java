@@ -5,30 +5,44 @@
  */
 package com.github.liachmodded.runorama;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.function.Function;
 
+/**
+ * The configuration format for Runorama, backed by Java's builtin {@link Properties}.
+ */
 public final class RunoConfig {
 
     final Properties properties;
 
+    /**
+     * Load the configuration from a property file.
+     *
+     * <p>The file should be encoded in UTF-8.
+     *
+     * @param file the configuration file
+     * @return the loaded configuration
+     */
     public static RunoConfig load(Path file) {
         Properties props = new Properties();
-        try (InputStreamReader stream = new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8)) {
-            props.load(stream);
+        try (BufferedReader reader = Files.newBufferedReader(file)) {
+            props.load(reader);
         } catch (IOException ex) {
             Runorama.LOGGER.error("Failed to load config file from {}!", file, ex);
         }
         return new RunoConfig(props);
     }
 
+    /**
+     * Create a configuration from a {@link Properties}.
+     *
+     * @param properties the backing properties
+     */
     public RunoConfig(Properties properties) {
         this.properties = properties;
     }
@@ -79,7 +93,7 @@ public final class RunoConfig {
     public void save(Path file) {
         try {
             Files.createDirectories(file.getParent());
-            try (Writer writer = new OutputStreamWriter(Files.newOutputStream(file), StandardCharsets.UTF_8)) {
+            try (Writer writer = Files.newBufferedWriter(file)) {
                 properties.store(writer, "runorama config");
             }
         } catch (IOException ex) {
@@ -87,6 +101,10 @@ public final class RunoConfig {
         }
     }
 
+    /**
+     * A property in the configuration.
+     * @param <T> the value's type
+     */
     public final class Property<T> {
 
         private final String key;
