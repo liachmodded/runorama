@@ -64,11 +64,11 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             runorama.needsScreenshot = false;
             // record
             boolean oldHudHidden = options.hudHidden;
-            boolean oldFov90 = ((GameRendererAccessor) gameRenderer).isFov90();
+            boolean oldFov90 = Runorama.isFov90(gameRenderer);
             Screen oldScreen = this.currentScreen;
             // set
             options.hudHidden = true;
-            ((GameRendererAccessor) gameRenderer).setFov90(true);
+            Runorama.setFov90(gameRenderer, true);
             currentScreen = null;
             // take
             float yaw = (cameraEntity == null ? player : cameraEntity).getYaw(this.paused ? this.pausedTickDelta : this.renderTickCounter.tickDelta);
@@ -89,7 +89,7 @@ public abstract class ClientMixin extends NonBlockingThreadExecutor<Runnable> {
             // restore
             currentScreen = oldScreen;
             options.hudHidden = oldHudHidden;
-            ((GameRendererAccessor) gameRenderer).setFov90(oldFov90);
+            Runorama.setFov90(gameRenderer, oldFov90);
 
             player.addChatMessage(new TranslatableText("runorama.shot", new LiteralText(root.toAbsolutePath().toString()).styled(style -> {
                 style.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, root.toAbsolutePath().toString()));

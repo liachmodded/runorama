@@ -8,11 +8,13 @@ package com.github.liachmodded.runorama;
 import com.github.liachmodded.runorama.client.BoundImage;
 import com.github.liachmodded.runorama.client.CloseableBinder;
 import com.github.liachmodded.runorama.client.VanillaPanorama;
+import com.github.liachmodded.runorama.mixin.GameRendererAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceImpl;
@@ -71,6 +73,14 @@ public final class Runorama implements ClientModInitializer {
      */
     public static Runorama getInstance() {
         return instance;
+    }
+
+    public static void setFov90(GameRenderer renderer, boolean value) {
+        ((GameRendererAccessor) renderer).setFov90(value);
+    }
+
+    public static boolean isFov90(GameRenderer renderer) {
+        return ((GameRendererAccessor) renderer).isFov90();
     }
 
     @Override
