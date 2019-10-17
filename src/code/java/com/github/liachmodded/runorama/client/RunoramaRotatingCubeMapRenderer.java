@@ -36,6 +36,5 @@ public class RunoramaRotatingCubeMapRenderer extends RotatingCubeMapRenderer {
                 0f,
                 float_2
         );
-        this.client.method_22683().method_4493(MinecraftClient.IS_SYSTEM_MAC);
     }
 }

@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        maven {
+            name = "liachmodded"
+            url = uri("https://dl.bintray.com/liachmodded/doublecart")
+        }
+    }
+    dependencies {
+        classpath "com.matthewprenger:CurseGradle:1.4.+"
+    }
+}
+
 plugins {
     id 'fabric-loom' version '0.2.5-SNAPSHOT'
     id 'maven-publish'
@@ -179,4 +191,18 @@ publishing {
 
 static boolean isNullOrEmpty(String st) {
     return st == null || st.isEmpty()
+}
+
+if (!isNullOrEmpty(System.getenv("curseforge_api_key"))) {
+    apply plugin: "com.matthewprenger.cursegradle"
+
+    curseforge {
+        apiKey = System.getenv("curseforge_api_key")
+        project {
+            id = "runorama"
+            changelogType = "markdown"
+            changelog = System.getenv("TRAVIS_COMMIT_MESSAGE")
+            releaseType = "release"
+        }
+    }
 }

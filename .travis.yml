@@ -19,7 +19,7 @@ jobs:
     script: "./gradlew build -S -i"
   - stage: deploy
     install: true
-    script: "./gradlew javadocs build bintrayUpload -S -i"
+    script: "./gradlew javadocs build bintrayUpload curseforge -S -i"
     deploy:
       - provider: pages
         github_token: "$GITHUB_OAUTH_TOKEN"

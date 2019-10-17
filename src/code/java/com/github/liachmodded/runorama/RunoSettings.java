@@ -17,6 +17,11 @@ public final class RunoSettings {
     private final Runorama mod;
     private final RunoConfig config;
     private final Path path;
+
+    /**
+     * Whether the title screen's panorama is replaced by the taken ones.
+     */
+    public final RunoConfig.Property<Boolean> replaceTitleScreen;
     /**
      * The integer ID of the next panorama that will be taken.
      */
@@ -42,6 +47,7 @@ public final class RunoSettings {
         this.mod = mod;
         this.config = backend;
         this.path = path;
+        this.replaceTitleScreen = config.booleanProperty("replace-title-screen", true);
         this.next = config.integerProperty("next", 0);
         this.poolSize = config.integerProperty("pool-size", 1000);
         this.rotationSpeed = config.doubleProperty("clockwise-rotation-speed", 1.0D);
