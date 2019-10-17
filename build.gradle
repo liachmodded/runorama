@@ -197,9 +197,6 @@ if (!isNullOrEmpty(System.getenv("curseforge_api_key"))) {
             changelogType = "markdown"
             changelog = System.getenv("TRAVIS_COMMIT_MESSAGE")
             releaseType = "release"
-            mainArtifact {
-                artifact = tasks.remapJar
-            }
         }
     }
 }
