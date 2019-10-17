@@ -181,12 +181,6 @@ publishing {
             artifact javadocsJar
         }
     }
-
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
 }
 
 static boolean isNullOrEmpty(String st) {
@@ -199,10 +193,13 @@ if (!isNullOrEmpty(System.getenv("curseforge_api_key"))) {
     curseforge {
         apiKey = System.getenv("curseforge_api_key")
         project {
-            id = "runorama"
+            id = "339587"
             changelogType = "markdown"
             changelog = System.getenv("TRAVIS_COMMIT_MESSAGE")
             releaseType = "release"
+            mainArtifact {
+                artifact = tasks.remapJar
+            }
         }
     }
 }
