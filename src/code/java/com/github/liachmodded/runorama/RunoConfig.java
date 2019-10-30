@@ -21,6 +21,15 @@ public final class RunoConfig {
     final Properties properties;
 
     /**
+     * Create a configuration from a {@link Properties}.
+     *
+     * @param properties the backing properties
+     */
+    public RunoConfig(Properties properties) {
+        this.properties = properties;
+    }
+
+    /**
      * Load the configuration from a property file.
      *
      * <p>The file should be encoded in UTF-8.
@@ -36,15 +45,6 @@ public final class RunoConfig {
             Runorama.LOGGER.error("Failed to load config file from {}!", file, ex);
         }
         return new RunoConfig(props);
-    }
-
-    /**
-     * Create a configuration from a {@link Properties}.
-     *
-     * @param properties the backing properties
-     */
-    public RunoConfig(Properties properties) {
-        this.properties = properties;
     }
 
     public Property<Boolean> booleanProperty(String key, boolean value) {
@@ -108,8 +108,8 @@ public final class RunoConfig {
     public final class Property<T> {
 
         private final String key;
-        private T value;
         private final Function<T, String> saver;
+        private T value;
 
         Property(String key, T value, Function<T, String> saver) {
             this.key = key;

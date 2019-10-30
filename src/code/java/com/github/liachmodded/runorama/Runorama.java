@@ -8,17 +8,18 @@ package com.github.liachmodded.runorama;
 import com.github.liachmodded.runorama.client.BoundImage;
 import com.github.liachmodded.runorama.client.CloseableBinder;
 import com.github.liachmodded.runorama.client.VanillaPanorama;
-import com.github.liachmodded.runorama.mixin.GameRendererAccessor;
+import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.resource.ResourceImpl;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Quaternion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,17 +47,28 @@ public final class Runorama implements ClientModInitializer {
      * The logger.
      */
     public static final Logger LOGGER = LogManager.getLogger(ID);
+    /**
+     * The rotations for the 6 sides of the rendered panorama.
+     */
+    public static final List<Quaternion> ROTATIONS = ImmutableList.of(
+            Vector3f.POSITIVE_Y.getRotationQuaternion(0),
+            Vector3f.POSITIVE_Y.getRotationQuaternion(90),
+            Vector3f.POSITIVE_Y.getRotationQuaternion(180),
+            Vector3f.POSITIVE_Y.getRotationQuaternion(270),
+            Vector3f.POSITIVE_X.getRotationQuaternion(-90),
+            Vector3f.POSITIVE_X.getRotationQuaternion(90)
+    );
     private static Runorama instance;
+    /**
+     * Whether to take a screenshot the next time a frame is rendered.
+     */
+    public boolean needsScreenshot = false;
     private Path cacheDir;
     private Path settingsFile;
     private RunoSettings settings;
     private boolean takingScreenshot;
     private float desiredPitch;
     private float desiredYaw;
-    /**
-     * Whether to take a screenshot the next time a frame is rendered.
-     */
-    public boolean needsScreenshot = false;
 
     /**
      * Easy way to create an {@link Identifier} with Runorama's namespace.
@@ -73,14 +85,6 @@ public final class Runorama implements ClientModInitializer {
      */
     public static Runorama getInstance() {
         return instance;
-    }
-
-    public static void setFov90(GameRenderer renderer, boolean value) {
-        ((GameRendererAccessor) renderer).setFov90(value);
-    }
-
-    public static boolean isFov90(GameRenderer renderer) {
-        return ((GameRendererAccessor) renderer).isFov90();
     }
 
     @Override
@@ -206,44 +210,5 @@ public final class Runorama implements ClientModInitializer {
     public RunoSettings getSettings() {
         return this.settings;
     }
-
-    /**
-     * Sets the rotation for the camera for the panorama and start taking a screenshot.
-     *
-     * @param pitch the pitch
-     * @param yaw the yaw
-     */
-    public void setPanoramicRotation(float pitch, float yaw) {
-        this.takingScreenshot = true;
-        this.desiredPitch = pitch;
-        this.desiredYaw = yaw;
-    }
-
-    /**
-     * Returns true if a screenshot is in progress.
-     */
-    public boolean isTakingScreenshot() {
-        return takingScreenshot;
-    }
-
-    /**
-     * Returns the desired pitch for the camera.
-     */
-    public float getDesiredPitch() {
-        return desiredPitch;
-    }
-
-    /**
-     * Returns the desired yaw for the camera.
-     */
-    public float getDesiredYaw() {
-        return desiredYaw;
-    }
-
-    /**
-     * End the series of screenshot.
-     */
-    public void endPanorama() {
-        this.takingScreenshot = false;
-    }
+    
 }

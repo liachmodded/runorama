@@ -27,7 +27,8 @@ import java.util.function.Supplier;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
 
-    @Shadow private @Final @Mutable RotatingCubeMapRenderer backgroundRenderer;
+    @Shadow
+    private @Final @Mutable RotatingCubeMapRenderer backgroundRenderer;
     private CloseableBinder binder;
 
     protected TitleScreenMixin(Text text_1) {

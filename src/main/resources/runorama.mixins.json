@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "TitleScreenMixin",
-    "ClientMixin",
-    "GameRendererAccessor",
-    "CameraMixin"
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

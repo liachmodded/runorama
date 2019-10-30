@@ -14,10 +14,6 @@ import java.nio.file.Path;
  */
 public final class RunoSettings {
 
-    private final Runorama mod;
-    private final RunoConfig config;
-    private final Path path;
-
     /**
      * Whether the title screen's panorama is replaced by the taken ones.
      */
@@ -42,6 +38,9 @@ public final class RunoSettings {
      * Whether to include vanilla panorama for the panoramas Runorama mod would display.
      */
     public final RunoConfig.Property<Boolean> includeVanillaPanorama;
+    private final Runorama mod;
+    private final RunoConfig config;
+    private final Path path;
 
     public RunoSettings(Runorama mod, RunoConfig backend, Path path) {
         this.mod = mod;
