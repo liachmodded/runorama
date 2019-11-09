@@ -21,7 +21,7 @@ public final class BoundImage implements CloseableBinder {
 
     @Override
     public void bind(int i) {
-        textures[i].method_23207();
+        textures[i].bindTexture();
     }
 
     @Override

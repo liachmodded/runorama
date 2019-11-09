@@ -33,13 +33,13 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
 
     public void draw(MinecraftClient client, float xAngle, float yAngle, float zAngle, float alphaF) {
         Tessellator tessellator_1 = Tessellator.getInstance();
-        BufferBuilder bufferBuilder_1 = tessellator_1.getBufferBuilder();
+        BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
         RenderSystem.matrixMode(5889);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        RenderSystem.multMatrix(Matrix4f
-                .method_4929(85.0D, (float) client.getWindow().getFramebufferWidth() / (float) client.getWindow().getFramebufferHeight(), 0.05F,
-                        10.0F));
+        RenderSystem.multMatrix(Matrix4f.method_4929(85.0D,
+                (float) client.getWindow().getFramebufferWidth() / (float) client.getWindow().getFramebufferHeight(),
+                0.05F, 10.0F));
         RenderSystem.matrixMode(5888);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
@@ -64,7 +64,7 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
             for (int int_3 = 0; int_3 < 6; ++int_3) {
                 //            minecraftClient_1.getTextureManager().bindTexture(this.faces[int_3]);
                 binder.bind(int_3);
-                bufferBuilder_1.begin(7, VertexFormats.POSITION_UV_COLOR);
+                bufferBuilder_1.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
                 int alpha = Math.round(255.0F * alphaF) / (pass + 1);
                 if (int_3 == 0) {
                     bufferBuilder_1.vertex(-1.0D, -1.0D, 1.0D).texture(0.0F, 0.0F).color(255, 255, 255, alpha).next();

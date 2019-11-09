@@ -66,9 +66,6 @@ public final class Runorama implements ClientModInitializer {
     private Path cacheDir;
     private Path settingsFile;
     private RunoSettings settings;
-    private boolean takingScreenshot;
-    private float desiredPitch;
-    private float desiredYaw;
 
     /**
      * Easy way to create an {@link Identifier} with Runorama's namespace.

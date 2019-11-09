@@ -29,7 +29,7 @@
 
   "depends": {
     "fabricloader": ">=0.6.3",
-    "minecraft": ">=1.15-alpha.19.42.a",
+    "minecraft": ">=1.15-alpha.19.45.a",
     "fabric-keybindings-v0": ">=0.1.1",
     "fabric-events-lifecycle-v0": ">=0.1.1"
   }

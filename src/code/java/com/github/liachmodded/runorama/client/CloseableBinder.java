@@ -17,5 +17,6 @@ public interface CloseableBinder extends AutoCloseable {
     /**
      * Disposes this binder.
      */
+    @Override
     void close();
 }
