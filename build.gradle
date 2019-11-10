@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
@@ -22,14 +22,13 @@ minecraft {
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
-    mappings "net.fabricmc:yarn:${project.yarnMappings}"
+    mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
 
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
+    annotationProcessor 'net.fabricmc:fabric-mixin-compile-extensions:0.2.0.+' // Fixes loom glitch
 }
 
 sourceSets {
