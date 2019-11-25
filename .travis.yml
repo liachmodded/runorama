@@ -18,7 +18,8 @@ jobs:
     install: chmod +x ./gradlew
     script: "./gradlew build -S -i"
   - stage: deploy
-    install: true
+    before_install: sudo apt-get install pandoc
+    install: pandoc --from markdown --to html4 --standalone -o readme.html README.md
     script: "./gradlew javadocs build bintrayUpload -S -i"
     deploy:
       - provider: pages
@@ -34,7 +35,6 @@ jobs:
         file: build/libs/*
         skip_cleanup: true
         on:
-          branch: master
           tags: true
 
 stages:

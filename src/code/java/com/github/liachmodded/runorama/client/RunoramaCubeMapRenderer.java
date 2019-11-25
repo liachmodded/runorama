@@ -37,7 +37,7 @@ public class RunoramaCubeMapRenderer extends CubeMapRenderer {
         RenderSystem.matrixMode(5889);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        RenderSystem.multMatrix(Matrix4f.method_4929(85.0D,
+        RenderSystem.multMatrix(Matrix4f.viewboxMatrix(85.0D,
                 (float) client.getWindow().getFramebufferWidth() / (float) client.getWindow().getFramebufferHeight(),
                 0.05F, 10.0F));
         RenderSystem.matrixMode(5888);

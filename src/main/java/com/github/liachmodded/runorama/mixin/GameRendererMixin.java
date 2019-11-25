@@ -42,9 +42,7 @@ public abstract class GameRendererMixin {
     @Inject(method = "render", locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/render/GameRenderer;renderWorld(FJLnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void runorama$renderPanorama(float tickDelta, long long_1, boolean boolean_1, CallbackInfo ci, int i1, int i2, int i3,
-            MatrixStack outerMatrixStack,
-            int i4, long l2, long l3) {
+    public void runorama$renderPanorama(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int i1, int i2, MatrixStack outerMatrixStack) {
         Runorama runorama = Runorama.getInstance();
         if (runorama.needsScreenshot) {
             Runorama.LOGGER.info("Taking screenshot");
@@ -60,7 +58,7 @@ public abstract class GameRendererMixin {
             for (int i = 0; i < rotations.size(); i++) {
                 MatrixStack stack = new MatrixStack(); // Adding a layer in the old one fails empty check
                 stack.multiply(rotations.get(i));
-                doRender(tickDelta, l3, stack);
+                doRender(tickDelta, startTime, stack);
                 takeScreenshot(runorama, root, i);
             }
             // restore
@@ -73,8 +71,8 @@ public abstract class GameRendererMixin {
         }
     }
 
-    private void doRender(float float_1, long long_3, MatrixStack matrixStack_1) {
-        this.renderWorld(float_1, Util.getMeasuringTimeNano() + long_3, matrixStack_1);
+    private void doRender(float tickDelta, long startTime, MatrixStack matrixStack_1) {
+        this.renderWorld(tickDelta, Util.getMeasuringTimeNano() + startTime, matrixStack_1);
     }
 
     private void takeScreenshot(Runorama runorama, Path folder, int id) {

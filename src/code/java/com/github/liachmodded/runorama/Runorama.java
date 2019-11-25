@@ -51,12 +51,12 @@ public final class Runorama implements ClientModInitializer {
      * The rotations for the 6 sides of the rendered panorama.
      */
     public static final List<Quaternion> ROTATIONS = ImmutableList.of(
-            Vector3f.POSITIVE_Y.getRotationQuaternion(0),
-            Vector3f.POSITIVE_Y.getRotationQuaternion(90),
-            Vector3f.POSITIVE_Y.getRotationQuaternion(180),
-            Vector3f.POSITIVE_Y.getRotationQuaternion(270),
-            Vector3f.POSITIVE_X.getRotationQuaternion(-90),
-            Vector3f.POSITIVE_X.getRotationQuaternion(90)
+            Vector3f.POSITIVE_Y.getDegreesQuaternion(0),
+            Vector3f.POSITIVE_Y.getDegreesQuaternion(90),
+            Vector3f.POSITIVE_Y.getDegreesQuaternion(180),
+            Vector3f.POSITIVE_Y.getDegreesQuaternion(270),
+            Vector3f.POSITIVE_X.getDegreesQuaternion(-90),
+            Vector3f.POSITIVE_X.getDegreesQuaternion(90)
     );
     private static Runorama instance;
     /**

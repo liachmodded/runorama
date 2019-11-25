@@ -59,19 +59,12 @@ tasks.withType(JavaCompile) {
 }
 
 tasks.withType(Javadoc) {
-    options.encoding = 'UTF-8'
-    options.charSet = 'UTF-8'
-    options.links(
-            'https://google.github.io/guava/releases/21.0/api/docs/',
-            'http://asm.ow2.org/asm50/javadoc/user/',
-            'https://docs.oracle.com/javase/8/docs/api/',
-            'http://jenkins.liteloader.com/job/Mixin/javadoc/',
-            'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
-            // Need to add minecraft jd publication once there is one available
-    )
-
-    // Disable the crazy super-strict doclint tool in Java 8
-    options.addStringOption('Xdoclint:none', '-quiet')
+    options {
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+        // Disable the crazy super-strict doclint tool in Java 8
+        addStringOption('Xdoclint:none', '-quiet')
+    }
 }
 
 processResources {
@@ -99,6 +92,22 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 task javadocs(type: Javadoc) {
     source = sourceSets.code.allJava
+
+    classpath = sourceSets.code.compileClasspath
+
+    options {
+        if (file("readme.html").exists()) {
+            overview = "readme.html"
+        }
+        links(
+                'https://google.github.io/guava/releases/21.0/api/docs/',
+                'http://asm.ow2.org/asm50/javadoc/user/',
+                'https://docs.oracle.com/javase/8/docs/api/',
+                'http://jenkins.liteloader.com/job/Mixin/javadoc/',
+                'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+                // Need to add minecraft jd publication once there is one available
+        )
+    }
 }
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {
