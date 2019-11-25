@@ -32,7 +32,7 @@ jobs:
           branch: master
       - provider: releases
         api_key: "$GITHUB_OAUTH_TOKEN"
-        file: build/libs/*
+        files: build/libs/*
         skip_cleanup: true
         on:
           tags: true
