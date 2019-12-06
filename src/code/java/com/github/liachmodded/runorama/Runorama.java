@@ -96,7 +96,7 @@ public final class Runorama implements ClientModInitializer {
                 FabricKeyBinding.Builder.create(name("runorama"), InputUtil.Type.KEYSYM, 'H'/*h*/, "key.categories.misc").build();
         KeyBindingRegistry.INSTANCE.register(screenshotKey);
         ClientTickCallback.EVENT.register(c -> {
-            if (screenshotKey.isPressed()) {
+            if (c.currentScreen == null && screenshotKey.isPressed()) {
                 this.needsScreenshot = true;
             }
         });
